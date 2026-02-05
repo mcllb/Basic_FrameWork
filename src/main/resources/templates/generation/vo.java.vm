@@ -1,0 +1,42 @@
+package ${cfg.voPackage};
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import java.util.Date;
+import lombok.Data;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.yunke.admin.common.base.BaseVO;
+#if(${swagger})
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+#end
+import java.io.Serializable;
+
+/**
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ApiModel(value = "${entity}对象", description = "${entity}对象")
+public class ${entity}VO extends BaseVO {
+
+    private static final long serialVersionUID = 1L;
+
+    #foreach($field in ${table.fields})
+    #if(${field.propertyName} == "id")
+    @ApiModelProperty(value = "${field.comment}")
+    private ${field.propertyType} ${field.propertyName};
+    #end
+    #if(${field.propertyName} != "id"&&${field.propertyName} != "createTime" && ${field.propertyName} != "updateTime"&&${field.propertyName} != "createBy" && ${field.propertyName} != "updateBy")
+    @ApiModelProperty(value = "${field.comment}")
+    private ${field.propertyType} ${field.propertyName};
+    #end
+
+    #end
+}

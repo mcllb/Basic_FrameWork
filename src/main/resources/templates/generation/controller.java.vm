@@ -1,0 +1,76 @@
+package ${package.Controller};
+
+## 在类定义前添加这个变量定义
+#set($serviceInstanceName = $table.serviceName.substring(0,1).toLowerCase() + $table.serviceName.substring(1))
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.yunke.admin.common.base.BaseController;
+import com.yunke.admin.common.model.PageWrapper;
+import com.yunke.admin.framework.core.annotion.OpLog;
+import com.yunke.admin.framework.core.annotion.OpLogHeader;
+import com.yunke.admin.framework.core.enums.OpLogAnnotionOpTypeEnum;
+import com.yunke.admin.framework.core.response.ResponseData;
+import com.yunke.admin.framework.core.response.SuccessResponseData;
+import ${cfg.paramPackage}.${entity}AddParam;
+import ${cfg.paramPackage}.${entity}EditParam;
+import ${cfg.paramPackage}.${entity}PageQueryParam;
+import ${cfg.voPackage}.${entity}VO;
+import ${package.Service}.${table.serviceName};
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import javax.validation.constraints.NotEmpty;
+
+/**
+ * @className ${entity}Controller
+ * @description: ${table.comment} 前端控制器
+ * <p></p>
+ * @version 1.0
+ * @author ${author}
+ * @date ${date}
+ */
+@OpLogHeader("${cfg.moduleComment}")
+@RestController
+@RequestMapping("/${cfg.requestMappingPrefix}")
+@RequiredArgsConstructor
+@Validated
+public class ${table.controllerName} extends BaseController {
+
+    private final ${table.serviceName} ${serviceInstanceName};
+
+        @OpLog(title = "分页查询", opType = OpLogAnnotionOpTypeEnum.QUERY)
+        @SaCheckPermission("${cfg.permissionPrefix}:list")
+        @PostMapping(value = "page")
+        public ResponseData<PageWrapper<${entity}VO>> page(@RequestBody ${entity}PageQueryParam pageQueryParam) {
+            return new SuccessResponseData<>(${serviceInstanceName}.pageVO(pageQueryParam));
+        }
+
+        @OpLog(title = "详情", opType = OpLogAnnotionOpTypeEnum.DETAIL)
+        @GetMapping(value = "{id}")
+        public ResponseData<${entity}VO> detail(@NotEmpty(message = "id不能为空，请检查参数id")  @PathVariable("id") String id) {
+            return new SuccessResponseData<>(${serviceInstanceName}.getVO(id));
+        }
+
+        @OpLog(title = "新增", opType = OpLogAnnotionOpTypeEnum.INSERT)
+        @SaCheckPermission("${cfg.permissionPrefix}:add")
+        @PostMapping(value = "add")
+        public ResponseData add(@Validated @RequestBody ${entity}AddParam addParam) {
+            return ResponseData.bool(${serviceInstanceName}.add(addParam));
+        }
+
+        @OpLog(title = "编辑", opType = OpLogAnnotionOpTypeEnum.UPDATE)
+        @SaCheckPermission("${cfg.permissionPrefix}:edit")
+        @PostMapping(value = "edit")
+        public ResponseData edit(@Validated @RequestBody ${entity}EditParam editParam) {
+            return ResponseData.bool(${serviceInstanceName}.edit(editParam));
+        }
+
+        @OpLog(title = "删除", opType = OpLogAnnotionOpTypeEnum.DELETE)
+        @SaCheckPermission("${cfg.permissionPrefix}:delete")
+        @DeleteMapping(value = "{id}")
+        public ResponseData delete(@NotEmpty(message = "id不能为空，请检查参数id")  @PathVariable("id") String id) {
+            return ResponseData.bool(${serviceInstanceName}.delete(id));
+        }
+        }

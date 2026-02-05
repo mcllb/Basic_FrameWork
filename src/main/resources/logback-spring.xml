@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--日志格式应用spring boot默认的格式，也可以自己更改-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!--定义日志存放的位置，默认存放在项目启动的相对路径的目录-->
+    <springProperty scope="context" name="LOG_PATH" source="log.path" defaultValue="app-log"/>
+
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+
+        <!-- 日志内容过滤 -->
+        <filter class="com.yunke.admin.framework.logback.LogContentFilter">
+            <content>/actuator</content>
+            <!--内容匹配就丢弃-->
+            <onMatch>DENY</onMatch>
+            <!--内容不匹配处理-->
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+
+
+    </appender>
+
+    <!-- 日志记录器，日期滚动记录 -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${LOG_PATH}/log_error.log</file>
+
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <!-- 归档的日志文件的路径，%d{yyyy-MM-dd}指定日期格式，%i指定索引 -->
+            <fileNamePattern>${LOG_PATH}/error/log-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 保存 x 天的日志文件 -->
+            <maxHistory>10</maxHistory>
+            <!-- 除按日志记录之外，还配置了日志文件不能超过2M，若超过2M，日志文件会以索引0开始，
+            命名日志文件，例如log-error-2013-12-21.0.log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <!-- 追加方式记录日志 -->
+        <append>true</append>
+
+        <!-- 日志文件的格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+
+        <!-- 此日志文件只记录error级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 日志记录器，日期滚动记录 -->
+    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${LOG_PATH}/log_total.log</file>
+
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <!-- 归档的日志文件的路径，%d{yyyy-MM-dd}指定日期格式，%i指定索引 -->
+            <fileNamePattern>${LOG_PATH}/total/log-total-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 保存 x 天的日志文件 -->
+            <maxHistory>10</maxHistory>
+            <!-- 除按日志记录之外，还配置了日志文件不能超过10M，若超过10M，日志文件会以索引0开始，
+            命名日志文件，例如log-error-2013-12-21.0.log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <!-- 追加方式记录日志 -->
+        <append>true</append>
+
+        <!-- 日志文件的格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 日志记录器，日期滚动记录 -->
+    <appender name="MYBATIS_SQL_LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+        <!-- 正在记录的日志文件的路径及文件名 -->
+        <file>${LOG_PATH}/log_mybatis_sql.log</file>
+
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+
+            <!-- 归档的日志文件的路径，%d{yyyy-MM-dd}指定日期格式，%i指定索引 -->
+            <fileNamePattern>${LOG_PATH}/mybatis_sql/log_mybatis_sql-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 保存 x 天的日志文件 -->
+            <maxHistory>10</maxHistory>
+            <!-- 除按日志记录之外，还配置了日志文件不能超过10M，若超过10M，日志文件会以索引0开始，
+            命名日志文件，例如log-error-2013-12-21.0.log -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+
+        <!-- 追加方式记录日志 -->
+        <append>true</append>
+
+        <!-- 日志文件的格式 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+
+    </appender>
+
+
+
+    <!-- 开发环境，控制台打印-->
+    <springProfile name="dev">
+        <!--默认所有的包以debug-->
+        <root level="debug">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="FILE_ALL"/>
+        </root>
+
+        <!--各个服务的包在本地执行的时候，打开debug模式-->
+        <logger name="com.yunke.admin" level="debug" additivity="false">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="FILE_ALL"/>
+        </logger>
+
+        <!-- 减少部分debug日志 -->
+        <logger name="druid.sql" level="INFO"/>
+        <logger name="io.lettuce" level="INFO"/>
+        <logger name="com.atomikos" level="INFO"/>
+        <logger name="org.springframework.data.redis" level="INFO"/>
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springframework.jdbc" level="INFO"/>
+        <logger name="org.springframework.boot.actuate" level="INFO"/>
+        <logger name="org.apache.pdfbox" level="INFO"/>
+    </springProfile>
+
+
+    <!-- 测试、生产环境，输出到文档 -->
+    <springProfile name="test,prod">
+        <root level="debug">
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILE_ERROR"/>
+            <appender-ref ref="FILE_ALL"/>
+        </root>
+        <!-- mybatis-log -->
+        <logger name="mybatis-sql-log" level="info" additivity="false">
+            <appender-ref ref="MYBATIS_SQL_LOG"/>
+        </logger>
+
+        <!-- 减少部分debug日志 -->
+        <logger name="druid.sql" level="INFO"/>
+        <logger name="io.lettuce" level="INFO"/>
+        <logger name="com.atomikos" level="INFO"/>
+        <logger name="org.springframework.data.redis" level="INFO"/>
+        <logger name="org.springframework.web" level="INFO"/>
+        <logger name="org.springframework.jdbc" level="INFO"/>
+        <logger name="org.springframework.boot.actuate" level="INFO"/>
+        <logger name="org.apache.pdfbox" level="INFO"/>
+    </springProfile>
+
+
+</configuration>
+
+

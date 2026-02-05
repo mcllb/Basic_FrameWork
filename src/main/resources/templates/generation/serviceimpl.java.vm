@@ -1,0 +1,96 @@
+package ${cfg.serviceImplPackage};
+
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.yunke.admin.common.model.PageWrapper;
+import com.yunke.admin.common.util.BeanUtil;
+import ${cfg.entityPackage}.${entity};
+import ${cfg.mapperPackage}.${entity}Mapper;
+import ${cfg.paramPackage}.${entity}AddParam;
+import ${cfg.paramPackage}.${entity}EditParam;
+import ${cfg.paramPackage}.${entity}PageQueryParam;
+import ${cfg.voPackage}.${entity}VO;
+import ${cfg.servicePackage}.${entity}Service;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ *
+ * @author $!{author}
+ * @since $!{date}
+ */
+@Service
+public class $!{entity}ServiceImpl extends ServiceImpl<$!{entity}Mapper, $!{entity}> implements $!{entity}Service {
+
+    @Override
+    public PageWrapper<$!{entity}VO> pageVO($!{entity}PageQueryParam pageQueryParam) {
+        LambdaQueryWrapper<$!{entity}> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+        // TODO: 根据实际业务添加查询条件
+        // 示例：多字段模糊查询
+        // if (StrUtil.isNotBlank(pageQueryParam.getKeyword())) {
+        //     lambdaQueryWrapper.and(wrapper ->
+        //         wrapper.like($!{entity}::getField1, pageQueryParam.getKeyword())
+        //                .or()
+        //                .like($!{entity}::getField2, pageQueryParam.getKeyword())
+        //     );
+        // }
+
+        // TODO: 根据实际业务添加精确匹配条件
+        // lambdaQueryWrapper.eq(StrUtil.isNotBlank(pageQueryParam.getField()),
+        //                       $!{entity}::getField, pageQueryParam.getField());
+
+        // 默认排序
+        lambdaQueryWrapper.orderByDesc($!{entity}::getId);
+
+        IPage<$!{entity}> pageData = this.page(pageQueryParam.page(), lambdaQueryWrapper);
+
+        List<$!{entity}VO> pageVOList = BeanUtil.copyListProperties(pageData.getRecords(), $!{entity}VO::new);
+
+        // TODO: 根据需要填充字典、部门等信息
+        // BeanUtil.fillListDataDictField(pageVOList);
+        // BeanUtil.fillListDeptField(pageVOList);
+
+        return new PageWrapper(pageVOList, pageData.getTotal(), pageData.getSize(), pageData.getCurrent());
+    }
+
+    @Override
+    public $!{entity}VO getVO(String id) {
+        $!{entity} entity = this.getById(id);
+        if (entity == null) {
+            return null;
+        }
+        $!{entity}VO vo = new $!{entity}VO();
+        BeanUtil.copyProperties(entity, vo);
+
+        // TODO: 根据需要填充额外的VO字段
+
+        return vo;
+    }
+
+    @Override
+    public boolean add($!{entity}AddParam addParam) {
+        $!{entity} entity = new $!{entity}();
+        BeanUtil.copyProperties(addParam, entity);
+        return this.save(entity);
+    }
+
+    @Override
+    public boolean edit($!{entity}EditParam editParam) {
+        $!{entity} entity = this.getById(editParam.getId());
+        if (entity == null) {
+            return false;
+        }
+
+        BeanUtil.copyProperties(editParam, entity);
+        return this.updateById(entity);
+    }
+
+    @Override
+    public boolean delete(String id) {
+        return this.removeById(id);
+    }
+}

@@ -1,0 +1,17 @@
+package ${cfg.paramPackage};
+
+import com.yunke.admin.common.base.BasePageQueryParam;
+import lombok.*;
+import io.swagger.annotations.ApiModel;
+
+/**
+ *
+ * @author ${author}
+ * @date ${date}
+ */
+@Data
+@ApiModel(value = "${entity}PageQueryParam对象", description = "${entity}PageQueryParam对象")
+public class ${entity}PageQueryParam extends BasePageQueryParam {
+
+
+}

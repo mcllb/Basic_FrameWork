@@ -1,0 +1,60 @@
+package ${cfg.servicePackage};
+
+import com.yunke.admin.common.model.CommonDictVO;
+import com.yunke.admin.common.model.PageWrapper;
+import com.baomidou.mybatisplus.extension.service.IService;
+import ${cfg.paramPackage}.${entity}AddParam;
+import ${cfg.paramPackage}.${entity}EditParam;
+import ${cfg.paramPackage}.${entity}PageQueryParam;
+import ${cfg.voPackage}.${entity}VO;
+import ${cfg.entityPackage}.${entity};
+import java.util.List;
+
+
+/**
+ *
+ * @author $!{author}
+ * @since $!{date}
+ */
+public interface $!{entity}Service extends IService<$!{entity}> {
+    /**
+     * 分页查询
+     *
+     * @param pageQueryParam 分页查询请求参数
+     * @return PageWrapper<$!{entity}VO>
+     */
+    PageWrapper<$!{entity}VO> pageVO($!{entity}PageQueryParam pageQueryParam);
+
+    /**
+     * 获取详情
+     *
+     * @param id 主键id
+     * @return $!{entity}VO
+     */
+        $!{entity}VO getVO(String id);
+
+    /**
+     * 新增
+     *
+     * @param addParam 新增参数
+     * @return boolean
+     */
+    boolean add($!{entity}AddParam addParam);
+
+    /**
+     * 编辑
+     *
+     * @param editParam 编辑参数
+     * @return boolean
+     */
+    boolean edit($!{entity}EditParam editParam);
+
+    /**
+     * 根据id删除
+     *
+     * @param id 主键id
+     * @return boolean
+     */
+    boolean delete(String id);
+
+}
